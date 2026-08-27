@@ -59,4 +59,4 @@ def run_simulation(interval_second: int = 3):
             time.sleep(interval_second)
 
 if __name__ == "__main__":
-    run_simulation(interval_second=2)
+    run_simulation(interval_second=3)
