@@ -1,0 +1,54 @@
+services:
+  # --- BANCO RELACIONAL (METADADOS) ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: iot_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: iot_telemetry
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- BANCO DOCUMENTO (HISTÓRICO TIME-SERIES) ---
+  mongodb:
+    image: mongo:7.0
+    container_name: iot_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # --- CACHE E HOT STORAGE (ESTADO ATUAL) ---
+  redis:
+    image: redis:7-alpine
+    container_name: iot_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # --- MENSAGERIA E BUFFER DE TRÁFEGO ---
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: iot_rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: adminpassword
+    ports:
+      - "5672:5672"    # Porta de comunicação das aplicações (AMQP)
+      - "15672:15672"  # Dashboard visual de gerenciamento (HTTP)
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
